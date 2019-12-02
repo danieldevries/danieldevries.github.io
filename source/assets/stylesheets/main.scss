@@ -1,0 +1,120 @@
+// $primary-color: #8787ff;
+// $secondary-color: #fdfdfd;
+
+$primary-color: #000;
+$secondary-color: #fff;
+
+*,
+*:after,
+*:before {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  max-width: 45rem;
+  margin: 0 auto;
+  padding: 3rem;
+  background-color: $secondary-color;
+  color: $primary-color;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+}
+
+b, strong {
+  font-weight: 500;
+}
+
+img {
+  width: 100%;
+}
+
+ul, ol {
+  margin-left: 1em;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.325rem;
+  margin-top: 3rem;
+}
+
+header, main {
+  margin-bottom: 3rem;
+}
+
+main {
+  line-height: 1.5em;
+
+  a {
+    border-bottom: 1px solid $primary-color;
+  }
+}
+
+article header h1 {
+  margin-bottom: 1rem;
+}
+
+p,
+ul,
+ol,
+blockquote {
+  margin-bottom: 1.5rem;
+}
+
+ul ul,
+ul ol,
+ol ul {
+  margin-bottom: 0;
+}
+
+time {
+  font-size: .75rem;
+}
+
+blockquote {
+  border-left: 1px solid $primary-color;
+  padding: .5rem;
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+hr {
+  border: 0;
+  background: $primary-color;
+  height: 1px;
+  margin: 2rem 0;
+  width: 3rem;
+}
+
+pre {
+  margin-bottom: 1.5rem;
+  background: $primary-color;
+  color: $secondary-color;
+  padding: 1rem 0 1rem 1rem;
+  font-size: 1rem;
+}
+
+table {
+  width: 100%;
+}
+
+footer {
+  font-size: .75rem;
+
+  a {
+    border-bottom: 1px solid $primary-color;
+    margin-right: .5rem;
+  }
+}
+
