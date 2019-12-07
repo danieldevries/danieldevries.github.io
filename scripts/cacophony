@@ -1,0 +1,18 @@
+#! /bin/bash
+
+while getopts "d:f:" opt; do
+  case $opt in
+    d) dir="$OPTARG";;
+    f) file="$OPTARG";;
+    *) echo 'Error: illegal flag' >&2
+       exit 1
+  esac
+done
+
+if [ -z "$file" ]
+then
+    echo 'Error: Option -f is required' >&2
+    exit 1
+fi
+
+awk -v dir=$dir '/\/\/\s@include\s.+/ { print "\\/\\/ @include " $3 "/r " dir $3 ".js" }' $file | xargs -0 -n1 -I % sed % $file
