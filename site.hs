@@ -10,6 +10,7 @@ main = hakyllWith configuration $ do
         route   $ cleanRoute
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html" postContext
+            >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/layout.html" postContext
             >>= relativizeUrls
             >>= cleanIndexUrls
@@ -34,6 +35,14 @@ main = hakyllWith configuration $ do
                 >>= applyAsTemplate indexCtx
                 >>= loadAndApplyTemplate "templates/layout.html" indexCtx
                 >>= relativizeUrls
+
+    create ["atom.xml"] $ do
+        route $ idRoute
+        compile $ feedCompiler renderAtom
+
+    create ["rss.xml"] $ do
+        route $ idRoute
+        compile $ feedCompiler renderRss
 
     match "assets/stylesheets/main.scss" $ do
         route   $ constRoute "assets/stylesheets/main.css"
@@ -82,6 +91,12 @@ postContext = mconcat
     , standardContext
     ]
 
+feedContext :: Context String
+feedContext = mconcat
+    [ bodyField "description"
+    , postContext
+    ]
+
 standardContext :: Context String
 standardContext = mconcat
     [ constField "type" "default"
@@ -101,6 +116,18 @@ scssCompiler = do
                                             , "--load-path", "source/assets/stylesheets/main.scss"
                                             ])
 
+type FeedRenderer =
+    FeedConfiguration
+    -> Context String
+    -> [Item String]
+    -> Compiler (Item String)
+
+feedCompiler :: FeedRenderer -> Compiler (Item String)
+feedCompiler renderer =
+    renderer feedConfiguration feedContext
+        =<< fmap (take 10) . recentFirst
+        =<< loadAllSnapshots "posts/*.md" "content"
+
 --------------------------------------------------------------------------------
 
 configuration :: Configuration
@@ -110,4 +137,13 @@ configuration = defaultConfiguration
     , storeDirectory = "generated/cache"
     , tmpDirectory = "generated/cache/tmp"
     , deployCommand = "echo 'not yet'"
+    }
+
+feedConfiguration :: FeedConfiguration
+feedConfiguration = FeedConfiguration
+    { feedTitle = "Daniël de Vries"
+    , feedDescription = "Posts about programming etc."
+    , feedAuthorName = "Daniël de Vries"
+    , feedAuthorEmail = "contact@danieldevries.eu"
+    , feedRoot = "https://danieldevries.eu"
     }
