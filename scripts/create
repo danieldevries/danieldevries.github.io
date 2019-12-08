@@ -1,0 +1,54 @@
+#!/bin/bash
+
+create_post() {
+  read -r -p "Post Title > "
+  TITLE="$REPLY"
+  FILENAME=$(url_formatted_title "$TITLE")
+  FILEPATH="source/posts/"$FILENAME".md"
+
+  /bin/cat > $FILEPATH <<EOF
+---
+title: $TITLE
+date: $(formatted_date)
+tags: foo
+---
+EOF
+  $EDITOR $FILEPATH
+}
+
+create_page() {
+  read -r -p "Page Title > "
+  TITLE="$REPLY"
+  FILENAME=$(url_formatted_title "$TITLE")
+  FILEPATH="source/pages/"$FILENAME".md"
+
+  /bin/cat > $FILEPATH <<EOF
+---
+title: $TITLE
+---
+EOF
+  $EDITOR $FILEPATH
+}
+
+formatted_date() {
+  /bin/date "+%Y-%m-%d"
+}
+
+url_formatted_title() {
+  local result=$(echo $1 \
+      | iconv -f utf8 -t ascii//translit \
+      | tr '[:upper:]' '[:lower:]' \
+      | tr -dc 'a-z0-9. _-' \
+      | tr ' ' '-')
+  echo "$result"
+}
+
+case "$1" in
+  post )
+    create_post;;
+  page )
+    create_page;;
+  * )
+    echo "you didn't tell me what to do" >&2
+    exit 1;
+esac
