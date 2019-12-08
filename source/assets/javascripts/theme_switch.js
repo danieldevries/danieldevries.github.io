@@ -27,8 +27,18 @@ var ThemeSwitch = (function() {
   }
 
   function currentTheme() {
-    var theme = localStorage.getItem(_key) || 'light';
+    var theme = localStorage.getItem(_key) || getDefaultTheme();
     return theme;
+  }
+
+  function getDefaultTheme() {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    if (window.matchMedia('(prefers-color-scheme: light)').matches ||
+        window.matchMedia('(prefers-color-scheme: no-preference)').matches) {
+      return 'light';
+    }
   }
 
   function localStorageAvailable() {
