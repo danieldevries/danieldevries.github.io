@@ -2,4 +2,4 @@
 title: About
 ---
 
-This is the about page
+This site is built with [Hakyll](https://jaspervdj.be/hakyll).
