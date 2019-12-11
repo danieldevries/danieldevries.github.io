@@ -48,6 +48,13 @@ main = hakyllWith configuration $ do
         route   $ constRoute "assets/stylesheets/main.css"
         compile $ scssCompiler
 
+    match "assets/javascripts/*.js" $ compile getResourceBody
+    javascriptDependencies <- makePatternDependency "assets/javascripts/*.js"
+    rulesExtraDependencies [javascriptDependencies] $ do
+        create ["assets/javascripts/site.js"] $ do
+            route $ idRoute
+            compile $ javascriptCompiler
+
     match "static/*" $ do
         route   $ gsubRoute "^static/" (const "")
         compile $ copyFileCompiler
@@ -110,11 +117,13 @@ scssCompiler :: Compiler (Item String)
 scssCompiler = do
     fmap (fmap compressCss) $
         getResourceString
-        >>= withItemBody (unixFilter "sass" [ "-s"
-                                            , "--scss"
-                                            , "--style", "compressed"
-                                            , "--load-path", "source/assets/stylesheets/main.scss"
-                                            ])
+        >>= withItemBody (unixFilter "sass" args)
+    where
+        args = [ "-s"
+               , "--scss"
+               , "--style", "compressed"
+               , "--load-path", "source/assets/stylesheets/main.scss"
+               ]
 
 type FeedRenderer =
     FeedConfiguration
@@ -127,6 +136,16 @@ feedCompiler renderer =
     renderer feedConfiguration feedContext
         =<< fmap (take 10) . recentFirst
         =<< loadAllSnapshots "posts/*.md" "content"
+
+javascriptCompiler :: Compiler (Item String)
+javascriptCompiler = do
+    loadBody (fromFilePath "assets/javascripts/main.js")
+        >>= makeItem
+        >>= withItemBody (unixFilter "scripts/cacophony" args)
+    where
+        args = [ "-d", "source/assets/javascripts/"
+               , "-f", "source/assets/javascripts/main.js"
+               ]
 
 --------------------------------------------------------------------------------
 
