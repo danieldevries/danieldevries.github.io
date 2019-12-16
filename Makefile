@@ -23,6 +23,9 @@ deploy:
 css:
 	@sass --scss source/assets/stylesheets/main.scss
 
+js:
+	@scripts/cacophony -f source/assets/javascripts/main.js -d source/assets/javascripts/
+
 post:
 	@scripts/create post
 
