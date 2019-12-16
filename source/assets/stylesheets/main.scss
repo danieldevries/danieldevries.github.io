@@ -1,9 +1,13 @@
 :root {
+  --background-color: #fff;
+  --other-color: #28302b;
   --primary-color: #000;
   --secondary-color: #fff;
 }
 
 body[data-theme="dark"] {
+  --background-color: #28302b;
+  --other-color: #fff;
   --primary-color: #fff;
   --secondary-color: #000;
 }
@@ -20,7 +24,7 @@ body {
   max-width: 45rem;
   margin: 0 auto;
   padding: 3rem;
-  background-color: var(--secondary-color);
+  background-color: var(--background-color);
   color: var(--primary-color);
 }
 
@@ -49,6 +53,10 @@ h2 {
   font-size: 1.5rem;
   margin-bottom: 1.325rem;
   margin-top: 3rem;
+}
+
+header {
+  position: relative;
 }
 
 header, main {
@@ -119,6 +127,65 @@ footer {
   a {
     border-bottom: 1px solid var(--primary-color);
     margin-right: .5rem;
+  }
+}
+
+
+$themeSwitchHeight: 1rem;
+$themeSwitchWidth: $themeSwitchHeight * 2;
+
+#themeSwitch {
+  position: absolute;
+  right: 0;
+  top: -6px;
+
+  input[type=checkbox] {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+
+    &:after {
+      content: '';
+      width: $themeSwitchWidth;
+      height: $themeSwitchHeight;
+      display: inline-block;
+      border-radius: 18px;
+      clear: both;
+      background-color: #999;
+    }
+
+    &:before {
+      content: '';
+      width: $themeSwitchHeight;
+      height: $themeSwitchHeight;
+      display: block;
+      position: absolute;
+      left: 0;
+      border-radius: 50%;
+      background-color: var(--other-color);
+    }
+
+    &:checked:before {
+      left: $themeSwitchHeight;
+    }
+
+    &:checked:after {
+      background: #999;
+    }
+
+    &,
+    &:before,
+    &:after,
+    &:checked:before,
+    &:checked:after {
+      transition: ease .3s;
+      -webkit-transition: ease .3s;
+      -moz-transition: ease .3s;
+      -o-transition: ease .3s;
+    }
   }
 }
 

@@ -1,24 +1,23 @@
 var ThemeSwitch = (function() {
-  var _switcher = null,
-      _key = 'theme';
+  var _key   = 'theme',
+      _dark  = 'dark',
+      _light = 'light';
 
-  function init(switcher) {
+  function init(target) {
     if (!localStorageAvailable()) {
       return;
     }
 
     setTheme(currentTheme());
 
-    this._switcher = switcher;
-    this._switcher.onclick = function(e) {
-      e.preventDefault();
-      toggleTheme(currentTheme());
-    }
-  }
+    var checkbox = document.createElement('input');
+    checkbox.setAttribute('type', 'checkbox');
+    checkbox.checked = currentTheme() == _dark;
+    checkbox.addEventListener('change', function(e) {
+      this.checked ? setTheme(_dark) : setTheme(_light);
+    });
 
-  function toggleTheme(value) {
-    var newTheme = { 'dark': 'light', 'light': 'dark' }[value]
-    setTheme(newTheme);
+    target.appendChild(checkbox);
   }
 
   function setTheme(theme) {
@@ -33,11 +32,11 @@ var ThemeSwitch = (function() {
 
   function getDefaultTheme() {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
+      return _dark;
     }
     if (window.matchMedia('(prefers-color-scheme: light)').matches ||
         window.matchMedia('(prefers-color-scheme: no-preference)').matches) {
-      return 'light';
+      return _light;
     }
   }
 
@@ -49,7 +48,6 @@ var ThemeSwitch = (function() {
       storage.removeItem(x);
       return true;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }
