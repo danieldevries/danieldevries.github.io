@@ -26,14 +26,14 @@ main = hakyllWith configuration $ do
         route idRoute
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
-            let indexCtx =
-                    listField "posts" postContext (return posts) `mappend`
-                    constField "title" "Home"                    `mappend`
-                    defaultContext
+            let indexContext = mconcat
+                    [ listField "posts" postContext (return posts)
+                    , defaultContext
+                    ]
 
             getResourceBody
-                >>= applyAsTemplate indexCtx
-                >>= loadAndApplyTemplate "templates/layout.html" indexCtx
+                >>= applyAsTemplate indexContext
+                >>= loadAndApplyTemplate "templates/layout.html" indexContext
                 >>= relativizeUrls
 
     create ["atom.xml"] $ do
