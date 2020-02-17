@@ -44,15 +44,19 @@ main = hakyllWith configuration $ do
         route $ idRoute
         compile $ feedCompiler renderRss
 
-    match "assets/stylesheets/main.scss" $ do
-        route   $ constRoute "assets/stylesheets/main.css"
-        compile $ scssCompiler
+    match "assets/stylesheets/**.scss" $ compile getResourceBody
 
-    match "assets/javascripts/*.js" $ compile getResourceBody
-    javascriptDependencies <- makePatternDependency "assets/javascripts/*.js"
+    scssDependencies <- makePatternDependency "assets/stylesheets/**.scss"
+    rulesExtraDependencies [scssDependencies] $ do
+      create ["assets/stylesheets/main.css"] $ do
+          route   $ idRoute
+          compile $ scssCompiler
+
+    match "assets/javascripts/**.js" $ compile getResourceBody
+    javascriptDependencies <- makePatternDependency "assets/javascripts/**.js"
     rulesExtraDependencies [javascriptDependencies] $ do
         create ["assets/javascripts/site.js"] $ do
-            route $ idRoute
+            route   $ idRoute
             compile $ javascriptCompiler
 
     match "static/*" $ do
@@ -115,14 +119,14 @@ standardContext = mconcat
 
 scssCompiler :: Compiler (Item String)
 scssCompiler = do
-    fmap (fmap compressCss) $
-        getResourceString
+    loadBody (fromFilePath "assets/stylesheets/main.scss")
+        >>= makeItem
         >>= withItemBody (unixFilter "sass" args)
     where
         args = [ "-s"
                , "--scss"
                , "--style", "compressed"
-               , "--load-path", "source/assets/stylesheets/main.scss"
+               , "--load-path", "source/assets/stylesheets/"
                ]
 
 type FeedRenderer =
