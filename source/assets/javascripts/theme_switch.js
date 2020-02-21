@@ -12,6 +12,7 @@ var ThemeSwitch = (function() {
 
     var checkbox = document.createElement('input');
     checkbox.setAttribute('type', 'checkbox');
+    checkbox.setAttribute('title', 'Toggle dark mode');
     checkbox.checked = currentTheme() == _dark;
     checkbox.addEventListener('change', function(e) {
       this.checked ? setTheme(_dark) : setTheme(_light);
