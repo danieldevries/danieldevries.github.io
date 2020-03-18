@@ -1,0 +1,9 @@
+#!/bin/bash
+
+SITEMAP_URL="http://www.danieldevries.eu/sitemap.xml"
+
+curl -Ss -X GET -s --data-urlencode "sitemap=$SITEMAP_URL" \
+	https://google.com/webmasters/tools/ping > /dev/null
+curl -X GET -s --data-urlencode "sitemap=$SITEMAP_URL" \
+	http://www.bing.com/ping > /dev/null
+
