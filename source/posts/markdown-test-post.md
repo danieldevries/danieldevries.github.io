@@ -4,7 +4,7 @@ date: 2019-12-02
 tags: markdown
 ---
 
-Paragraphs are separated by a blank line.
+Paragraphs are separated by a blank line?
 
 2nd paragraph. *Italic*, **bold**, and `monospace`. Itemized lists
 look like:
@@ -55,13 +55,12 @@ define foobar() {
 (which makes copying & pasting easier). You can optionally mark the
 delimited block for Pandoc to syntax highlight it:
 
-~~~python
-import time
+~~~ruby
+require 'openstruct'
 # Quick, count to ten!
-for i in range(10):
-    # (but not *too* quick)
-    time.sleep(0.5)
-    print(i)
+10.times do |n|
+  OpenStruct.new(number: n)
+end
 ~~~
 
 ### An h3 header ###
