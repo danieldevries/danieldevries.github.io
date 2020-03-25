@@ -4,14 +4,14 @@ pre {
 
 .sourceCode {
   // KeyWordTok
-  kw { color: var(--source-code-1); }
+  .kw { color: var(--source-code-1); }
   // DataTypeTok
   dt { color: var(--source-code-1); }
 
   // DecValTok (decimal value), BaseNTok, FloatTok
   .dv, .bn, .fl { color: var(--source-code-2); }
   // CharTok
-  ..ch { color: var(--source-code-3); }
+  .ch { color: var(--source-code-3); }
   // StringTok
   .st { color: var(--source-code-4); }
   // CommentTok
