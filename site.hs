@@ -123,8 +123,7 @@ scssCompiler = do
         >>= makeItem
         >>= withItemBody (unixFilter "sass" args)
     where
-        args = [ "-s"
-               , "--scss"
+        args = [ "--stdin"
                , "--style", "compressed"
                , "--load-path", "source/assets/stylesheets/"
                ]
