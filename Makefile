@@ -21,7 +21,7 @@ deploy:
 	git stash pop
 
 css:
-	@sass --scss source/assets/stylesheets/main.scss
+	@sass --load-path=source/assets/stylesheets/ source/assets/stylesheets/main.scss
 
 js:
 	@scripts/cacophony -f source/assets/javascripts/main.js -d source/assets/javascripts/
