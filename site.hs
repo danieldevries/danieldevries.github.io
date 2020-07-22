@@ -121,7 +121,7 @@ scssCompiler :: Compiler (Item String)
 scssCompiler = do
     loadBody (fromFilePath "assets/stylesheets/main.scss")
         >>= makeItem
-        >>= withItemBody (unixFilter "sass" args)
+        >>= withItemBody (unixFilter "scss" args)
     where
         args = [ "--stdin"
                , "--style", "compressed"
