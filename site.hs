@@ -6,19 +6,21 @@ import           System.FilePath.Posix (takeBaseName,takeDirectory,(</>))
 
 main :: IO ()
 main = hakyllWith configuration $ do
+    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
+
     match "posts/*" $ do
         route   $ cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html" postContext
+            >>= loadAndApplyTemplate "templates/post.html" (postContext tags)
             >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/layout.html" postContext
+            >>= loadAndApplyTemplate "templates/layout.html" (postContext tags)
             >>= relativizeUrls
             >>= cleanIndexUrls
 
     match "pages/*" $ do
         route   $ gsubRoute "^pages/" (const "") `composeRoutes` cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/layout.html" postContext
+            >>= loadAndApplyTemplate "templates/layout.html" pageContext
             >>= relativizeUrls
             >>= cleanIndexUrls
 
@@ -27,7 +29,7 @@ main = hakyllWith configuration $ do
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
             let indexContext = mconcat
-                    [ listField "posts" postContext (return posts)
+                    [ listField "posts" (postContext tags) (return posts)
                     , defaultContext
                     ]
 
@@ -35,14 +37,32 @@ main = hakyllWith configuration $ do
                 >>= applyAsTemplate indexContext
                 >>= loadAndApplyTemplate "templates/layout.html" indexContext
                 >>= relativizeUrls
+                >>= cleanIndexUrls
+
+    tagsRules tags $ \tag pattern -> do
+        let title = "Posts tagged \"" ++ tag ++ "\""
+        route   $ cleanRoute
+        compile $ do
+            posts <- recentFirst =<< loadAll pattern
+            let context = mconcat
+                    [ constField "title" title
+                    , listField "posts" (postContext tags) (return posts)
+                    , standardContext
+                    ]
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/tag.html" context
+                >>= loadAndApplyTemplate "templates/layout.html" context
+                >>= relativizeUrls
+                >>= cleanIndexUrls
 
     create ["atom.xml"] $ do
         route $ idRoute
-        compile $ feedCompiler renderAtom
+        compile $ feedCompiler tags renderAtom
 
     create ["rss.xml"] $ do
         route $ idRoute
-        compile $ feedCompiler renderRss
+        compile $ feedCompiler tags renderRss
 
     match "assets/stylesheets/**.scss" $ compile getResourceBody
 
@@ -69,9 +89,9 @@ main = hakyllWith configuration $ do
 
 cleanRoute :: Routes
 cleanRoute = customRoute createIndexRoute
-    where
-        createIndexRoute ident = takeDirectory p </> takeBaseName p </> "index.html"
-            where p = toFilePath ident
+  where
+    createIndexRoute ident = takeDirectory p </> takeBaseName p </> "index.html"
+                            where p = toFilePath ident
 
 cleanIndexUrls :: Item String -> Compiler (Item String)
 cleanIndexUrls = return . fmap (withUrls cleanIndex)
@@ -79,14 +99,14 @@ cleanIndexUrls = return . fmap (withUrls cleanIndex)
 cleanIndexHtmls :: Item String -> Compiler (Item String)
 cleanIndexHtmls = return . fmap (replaceAll pattern replacement)
     where
-        pattern = "/index.html"
-        replacement = const "/"
+      pattern = "/index.html"
+      replacement = const "/"
 
 cleanIndex :: String -> String
 cleanIndex url
     | idx `isSuffixOf` url = take (length url - length idx) url
     | otherwise            = url
-    where idx = "index"
+  where idx = "index.html"
 
 --------------------------------------------------------------------------------
 
@@ -95,17 +115,18 @@ pageContext = mconcat
     [ standardContext
     ]
 
-postContext :: Context String
-postContext = mconcat
+postContext :: Tags -> Context String
+postContext tags = mconcat
     [ dateField "date" "%e %B %Y"
     , dateField "datetime" "%Y-%m-%d"
+    , tagsField "tags" tags
     , standardContext
     ]
 
-feedContext :: Context String
-feedContext = mconcat
+feedContext :: Tags -> Context String
+feedContext tags = mconcat
     [ bodyField "description"
-    , postContext
+    , postContext tags
     ]
 
 standardContext :: Context String
@@ -134,9 +155,9 @@ type FeedRenderer =
     -> [Item String]
     -> Compiler (Item String)
 
-feedCompiler :: FeedRenderer -> Compiler (Item String)
-feedCompiler renderer =
-    renderer feedConfiguration feedContext
+feedCompiler :: Tags -> FeedRenderer -> Compiler (Item String)
+feedCompiler tags renderer =
+    renderer feedConfiguration (feedContext tags)
         =<< fmap (take 10) . recentFirst
         =<< loadAllSnapshots "posts/*.md" "content"
 

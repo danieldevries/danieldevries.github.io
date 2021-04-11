@@ -1,8 +1,11 @@
-<ul id="notes">
-  $for(posts)$
-    <li>
+$for(posts)$
+  <article class="post-list">
+    <div>
       <a href="$url$">$title$</a>
-      <time datetime="$datetime$" class="date">$date$</time>
-    </li>
-  $endfor$
-</ul>
+    </div>
+    <p>
+      <time datetime="$datetime$" class="date">$date$</time>.
+      Tagged $tags$
+    </p>
+  </article>
+$endfor$
