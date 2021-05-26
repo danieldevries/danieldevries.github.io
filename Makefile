@@ -1,7 +1,7 @@
 SHA:=$(shell git rev-parse --short=8 --verify HEAD)
 
 deploy:
-	git stash
+	git stash --include-untracked
 	git checkout development
 	stack exec site clean
 	stack exec site build
@@ -31,3 +31,7 @@ post:
 
 page:
 	@scripts/create page
+
+watch:
+	@stack exec site clean
+	@stack exec site watch
