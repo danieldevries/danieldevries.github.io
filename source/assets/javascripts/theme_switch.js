@@ -10,7 +10,7 @@ var ThemeSwitch = (function() {
 
     setTheme(currentTheme());
 
-    var checkbox = document.createElement('input');
+    const checkbox = document.createElement('input');
     checkbox.setAttribute('type', 'checkbox');
     checkbox.setAttribute('title', 'Toggle dark mode');
     checkbox.checked = currentTheme() == _dark;
@@ -27,8 +27,7 @@ var ThemeSwitch = (function() {
   }
 
   function currentTheme() {
-    var theme = localStorage.getItem(_key) || getDefaultTheme();
-    return theme;
+    return localStorage.getItem(_key) || getDefaultTheme();
   }
 
   function getDefaultTheme() {
@@ -43,7 +42,7 @@ var ThemeSwitch = (function() {
 
   function localStorageAvailable() {
     try {
-      var storage = localStorage,
+      let storage = localStorage,
           x = '__local_storage_test__';
       storage.setItem(x, x);
       storage.removeItem(x);

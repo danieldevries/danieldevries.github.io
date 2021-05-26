@@ -1,7 +1,7 @@
 $themeSwitchHeight: 1rem;
 $themeSwitchWidth: $themeSwitchHeight * 2;
 
-#themeSwitch {
+#theme-switch {
   position: absolute;
   right: 0;
   top: -6px;
@@ -32,7 +32,7 @@ $themeSwitchWidth: $themeSwitchHeight * 2;
       position: absolute;
       left: 0;
       border-radius: 50%;
-      background-color: var(--other-color);
+      background-color: black;
     }
 
     &:checked:before {
