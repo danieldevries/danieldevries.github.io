@@ -15,4 +15,5 @@ then
     exit 1
 fi
 
-awk -v dir=$dir '/\/\/\s@include\s.+/ { print "\\/\\/ @include " $3 "/r " dir $3 ".js" }' $file | xargs -0 -n1 -I % sed % $file
+awk -v dir=$dir '/\/\/\s@include\s.+/ { print "\\/\\/ @include " $3 "/r " dir $3 ".js" }' $file | xargs -0 -I % sed % $file
+
