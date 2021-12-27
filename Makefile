@@ -32,6 +32,9 @@ post:
 page:
 	@scripts/create page
 
+build:
+	@stack build
+
 watch:
 	@stack exec site clean
 	@stack exec site watch
