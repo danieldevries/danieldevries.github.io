@@ -1,11 +1,11 @@
-$for(posts)$
-  <article class="post-list">
-    <h2>
+<ul class="post-list">
+  $for(posts)$
+    <li>
       <a href="$url$">$title$</a>
-    </h2>
-    <p>
-      <time datetime="$datetime$" class="date">$date$</time>.
-      Tagged $tags$
-    </p>
-  </article>
-$endfor$
+      <br>
+      <time>
+        $date$
+      </time>
+    </li>
+  $endfor$
+</ul>

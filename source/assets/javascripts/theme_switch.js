@@ -10,15 +10,17 @@ var ThemeSwitch = (function() {
 
     setTheme(currentTheme());
 
-    const checkbox = document.createElement('input');
-    checkbox.setAttribute('type', 'checkbox');
-    checkbox.setAttribute('title', 'Toggle dark mode');
-    checkbox.checked = currentTheme() == _dark;
-    checkbox.addEventListener('change', function(e) {
-      this.checked ? setTheme(_dark) : setTheme(_light);
+    target.addEventListener('click', () => {
+      toggleTheme();
     });
+  }
 
-    target.appendChild(checkbox);
+  function toggleTheme() {
+    if (currentTheme() == _dark) {
+      setTheme(_light);
+    } else {
+      setTheme(_dark);
+    }
   }
 
   function setTheme(theme) {

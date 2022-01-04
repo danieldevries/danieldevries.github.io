@@ -6,20 +6,19 @@ import           System.FilePath.Posix (takeBaseName,takeDirectory,(</>))
 
 main :: IO ()
 main = hakyllWith configuration $ do
-    tags <- buildTags "posts/*" (fromCapture "tags/*.html")
-
     match "posts/*" $ do
         route   $ cleanRoute
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html" (postContext tags)
+            >>= loadAndApplyTemplate "templates/post.html" postContext
             >>= saveSnapshot "content"
-            >>= loadAndApplyTemplate "templates/layout.html" (postContext tags)
+            >>= loadAndApplyTemplate "templates/layout.html" postContext
             >>= relativizeUrls
             >>= cleanIndexUrls
 
     match "pages/*" $ do
         route   $ gsubRoute "^pages/" (const "") `composeRoutes` cleanRoute
         compile $ pandocCompiler
+            >>= loadAndApplyTemplate "templates/page.html" postContext
             >>= loadAndApplyTemplate "templates/layout.html" pageContext
             >>= relativizeUrls
             >>= cleanIndexUrls
@@ -29,8 +28,8 @@ main = hakyllWith configuration $ do
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
             let indexContext = mconcat
-                    [ listField "posts" (postContext tags) (return posts)
-                    , defaultContext
+                    [ listField "posts" postContext (return posts)
+                    , standardContext
                     ]
 
             getResourceBody
@@ -39,30 +38,9 @@ main = hakyllWith configuration $ do
                 >>= relativizeUrls
                 >>= cleanIndexUrls
 
-    tagsRules tags $ \tag pattern -> do
-        let title = "Posts tagged \"" ++ tag ++ "\""
-        route   $ cleanRoute
-        compile $ do
-            posts <- recentFirst =<< loadAll pattern
-            let context = mconcat
-                    [ constField "title" title
-                    , listField "posts" (postContext tags) (return posts)
-                    , standardContext
-                    ]
-
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/tag.html" context
-                >>= loadAndApplyTemplate "templates/layout.html" context
-                >>= relativizeUrls
-                >>= cleanIndexUrls
-
-    create ["atom.xml"] $ do
-        route $ idRoute
-        compile $ feedCompiler tags renderAtom
-
-    create ["rss.xml"] $ do
-        route $ idRoute
-        compile $ feedCompiler tags renderRss
+    -- create ["rss.xml"] $ do
+    --     route $ idRoute
+    --     compile $ feedCompiler renderRss
 
     match "assets/stylesheets/**.scss" $ compile getResourceBody
 
@@ -84,6 +62,7 @@ main = hakyllWith configuration $ do
         compile $ copyFileCompiler
 
     match "templates/*" $ compile templateBodyCompiler
+    match "templates/partials/*" $ compile templateBodyCompiler
 
 --------------------------------------------------------------------------------
 
@@ -115,26 +94,32 @@ pageContext = mconcat
     [ standardContext
     ]
 
-postContext :: Tags -> Context String
-postContext tags = mconcat
+postContext :: Context String
+postContext = mconcat
     [ dateField "date" "%e %B %Y"
     , dateField "datetime" "%Y-%m-%d"
-    , tagsField "tags" tags
     , standardContext
     ]
 
-feedContext :: Tags -> Context String
-feedContext tags = mconcat
+feedContext :: Context String
+feedContext = mconcat
     [ bodyField "description"
-    , postContext tags
     ]
 
 standardContext :: Context String
 standardContext = mconcat
     [ constField "type" "default"
     , modificationTimeField "lastmod" "%Y-%m-%d"
+    , buttonContext
     , defaultContext
     ]
+
+buttonContext :: Context String
+buttonContext = functionField "button" f
+    where f [link, title] _ = return $ "<a href=\""
+                                     ++ link ++ "\" class=\"button-link\">"
+                                     ++ title ++ "</a>"
+          f _ _ = error "$button$ needs two arguments"
 
 --------------------------------------------------------------------------------
 
@@ -155,10 +140,9 @@ type FeedRenderer =
     -> [Item String]
     -> Compiler (Item String)
 
-feedCompiler :: Tags -> FeedRenderer -> Compiler (Item String)
-feedCompiler tags renderer =
-    renderer feedConfiguration (feedContext tags)
-        =<< fmap (take 10) . recentFirst
+feedCompiler :: FeedRenderer -> Compiler (Item String)
+feedCompiler renderer =
+    renderer feedConfiguration feedContext
         =<< loadAllSnapshots "posts/*.md" "content"
 
 javascriptCompiler :: Compiler (Item String)
@@ -190,3 +174,4 @@ feedConfiguration = FeedConfiguration
     , feedAuthorEmail = "contact@danieldevries.eu"
     , feedRoot = "https://danieldevries.eu"
     }
+
