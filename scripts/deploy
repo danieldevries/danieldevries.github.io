@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+SHA=$(git rev-parse --short=8 --verify HEAD)
+
+stack exec site rebuild
+
+mkdir .deploy
+cd .deploy
+
+git init --initial-branch=main
+git remote add origin git@github.com:danieldevries/danieldevries.github.io.git
+git pull -r origin main
+
+rsync -a --delete --filter='P .git' ../generated/out/ .
+
+git add .
+git commit -m "deploying ${SHA}"
+git push origin main
+
+cd ..
+rm -rf .deploy
