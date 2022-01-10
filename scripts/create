@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 create_post() {
   read -r -p "Post Title > "

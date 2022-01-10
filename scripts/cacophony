@@ -1,4 +1,5 @@
-#! /bin/bash
+#!/usr/bin/env bash
+set -eo pipefail
 
 while getopts "d:f:" opt; do
   case $opt in
