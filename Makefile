@@ -16,3 +16,6 @@ build:
 watch:
 	@stack exec site clean
 	@stack exec site watch
+
+check:
+	@stack exec site check

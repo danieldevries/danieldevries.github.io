@@ -4,6 +4,7 @@ set -eo pipefail
 SHA=$(git rev-parse --short=8 --verify HEAD)
 
 stack exec site rebuild
+stack exec site check
 
 mkdir .deploy
 cd .deploy
