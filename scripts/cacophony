@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+# A small script to import the content of a file in another file.
+# Similar in function to `@import` in SASS.
+#
+# Example
+# 	cacophony -d assets/javascript/ -f assets/javascript/main.js
+#
+# Input file assets/javascript/main.js
+#
+# 	// @include some_script
+# 	// @include other_script
+#
+# Output
+#
+#	// @include some_script
+#       <contents from assets/javascript/some_script.js>
+#	// @include other_script
+#       <contents from assets/javascript/other_script.js>
+#
+
 while getopts "d:f:" opt; do
   case $opt in
     d) dir="$OPTARG";;
