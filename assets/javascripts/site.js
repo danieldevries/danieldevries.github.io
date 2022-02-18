@@ -11,15 +11,17 @@ var ThemeSwitch = (function() {
 
     setTheme(currentTheme());
 
-    var checkbox = document.createElement('input');
-    checkbox.setAttribute('type', 'checkbox');
-    checkbox.setAttribute('title', 'Toggle dark mode');
-    checkbox.checked = currentTheme() == _dark;
-    checkbox.addEventListener('change', function(e) {
-      this.checked ? setTheme(_dark) : setTheme(_light);
+    target.addEventListener('click', () => {
+      toggleTheme();
     });
+  }
 
-    target.appendChild(checkbox);
+  function toggleTheme() {
+    if (currentTheme() == _dark) {
+      setTheme(_light);
+    } else {
+      setTheme(_dark);
+    }
   }
 
   function setTheme(theme) {
@@ -28,8 +30,7 @@ var ThemeSwitch = (function() {
   }
 
   function currentTheme() {
-    var theme = localStorage.getItem(_key) || getDefaultTheme();
-    return theme;
+    return localStorage.getItem(_key) || getDefaultTheme();
   }
 
   function getDefaultTheme() {
@@ -44,7 +45,7 @@ var ThemeSwitch = (function() {
 
   function localStorageAvailable() {
     try {
-      var storage = localStorage,
+      let storage = localStorage,
           x = '__local_storage_test__';
       storage.setItem(x, x);
       storage.removeItem(x);
@@ -60,5 +61,5 @@ var ThemeSwitch = (function() {
 })();
 
 window.onload = function() {
-  ThemeSwitch.init(document.getElementById('themeSwitch'));
+  // ThemeSwitch.init(document.getElementById('theme-switch'));
 }

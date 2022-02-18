@@ -5,32 +5,36 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="author" content="Daniël de Vries" />
     <link href="./assets/stylesheets/main.css" rel="stylesheet" />
+    <script src="./assets/javascripts/site.js" type="text/javascript"></script>
     <title>Blog - Daniel de Vries</title>
-    <script src="./assets/javascripts/site.js" type="text/javascript">
-    </script>
   </head>
   <body>
     <header>
-      <h2>
-        <a href="./">
-          Daniël de Vries
-        </a>
-      </h2>
-      <div id="themeSwitch"></div>
+      <h1 id="site-title"><a href="./">Daniël de Vries</a></h1>
+      <div id="theme-switch"></div>
     </header>
     <main>
 <p>
-  Hi, I'm Daniël de Vries, a software developer living in Rotterdam, the Netherlands.<br>
-  I like creating things and solving problems with Ruby, Elixir or whatever.
+  <strong>Hello, my name is Daniël de Vries</strong> and I'm a software engineer working and living in Rotterdam, the Netherlands.
 </p>
 
-<h2>Posts</h2>
+<p>
+  You can also find me on:
+  <a href="https://github.com/danieldevries">GitHub</a>
+</p>
 
-<ul id="notes">
+<hr />
+
+<h2>Latest posts</h2>
+
+<ul class="post-list">
   
     <li>
-      <a href="./posts/hello-world/index.html">Hello World!</a>
-      <time datetime="2020-03-25" class="date">25 March 2020</time>
+      <a href="./posts/hakyll-blog-setup/">Hakyll blog setup</a>
+      <br>
+      <time>
+        29 January 2022
+      </time>
     </li>
   
 </ul>
@@ -38,8 +42,7 @@
 
     </main>
     <footer>
-      <a href="./about">about</a>
-      <a href="./contact">contact</a>
+      Dani&euml;l de Vries - <a href="./about">about</a>
     </footer>
   </body>
 </html>
